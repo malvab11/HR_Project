@@ -18,9 +18,15 @@ private val DarkColorScheme = darkColorScheme(
 )
 
 private val LightColorScheme = lightColorScheme(
-    primary = Purple40,
-    secondary = PurpleGrey40,
-    tertiary = Pink40
+    primary = Purple700,
+    onPrimary = White,
+    secondary = Purple500,
+    onSecondary = Purple500,
+    tertiary = Purple100,
+    background = Gray50,
+    onBackground = Gray200,
+    error = Error500,
+    onError = Error500,
 
     /* Other default colors to override
     background = Color(0xFFFFFBFE),
@@ -50,9 +56,11 @@ fun HR_ProjectTheme(
         else -> LightColorScheme
     }
 
+    //Corregir acá para cambiar la dinamica del colorScheme
     MaterialTheme(
-        colorScheme = colorScheme,
+        colorScheme = LightColorScheme,
         typography = Typography,
+        shapes = shapes,
         content = content
     )
 }
