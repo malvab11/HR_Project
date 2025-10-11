@@ -1,6 +1,5 @@
 package com.example.hr_project.features.onboard.presentation.screens
 
-import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -17,10 +16,15 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.pager.rememberPagerState
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -32,8 +36,11 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.example.hr_project.R
+import com.example.hr_project.core.widgets.bottomSheet.CustomBottomSheet
 import com.example.hr_project.core.widgets.buttons.FilledButtons
 import com.example.hr_project.core.widgets.buttons.OutlinedButtons
+import com.example.hr_project.features.auth.presentation.screens.AuthContent
+import com.example.hr_project.features.onboard.presentation.models.OnboardingDataUi
 import com.example.hr_project.ui.theme.Black
 import com.example.hr_project.ui.theme.Purple200
 import com.example.hr_project.ui.theme.Purple500
@@ -41,26 +48,27 @@ import com.example.hr_project.ui.theme.shapes
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MainOnboarding(modifier: Modifier) {
 
     val pages = listOf(
-        OnboardingData(
+        OnboardingDataUi(
             title = R.string.onboarding_title_1,
             subTitle = R.string.onboarding_sub_title_1,
             painter = R.drawable.page1_img
         ),
-        OnboardingData(
+        OnboardingDataUi(
             title = R.string.onboarding_title_2,
             subTitle = R.string.onboarding_sub_title_2,
             painter = R.drawable.page2_img
         ),
-        OnboardingData(
+        OnboardingDataUi(
             title = R.string.onboarding_title_3,
             subTitle = R.string.onboarding_sub_title_3,
             painter = R.drawable.page3_img
         ),
-        OnboardingData(
+        OnboardingDataUi(
             title = R.string.onboarding_title_4,
             subTitle = R.string.onboarding_sub_title_4,
             painter = R.drawable.page4_img
@@ -68,6 +76,7 @@ fun MainOnboarding(modifier: Modifier) {
     )
     val state = rememberPagerState { pages.size }
     val coroutineScope = rememberCoroutineScope()
+    var showBottomSheet by remember { mutableStateOf(false) }
 
     Column(
         modifier = modifier
@@ -85,15 +94,18 @@ fun MainOnboarding(modifier: Modifier) {
             totalIndicators = pages.size,
             selectedIndex = state.currentPage,
         )
-        ButtonsSection(coroutineScope = coroutineScope, pagerState = state, totalPages = pages.size)
+        ButtonsSection(
+            coroutineScope = coroutineScope,
+            pagerState = state,
+            totalPages = pages.size,
+        ) { showBottomSheet = true }
+    }
+    if (showBottomSheet) {
+        CustomBottomSheet(visible = showBottomSheet,onDismiss = { showBottomSheet = false }) {
+            AuthContent()
+        }
     }
 }
-
-private data class OnboardingData(
-    val title: Int,
-    val subTitle: Int,
-    val painter: Int
-)
 
 @Composable
 private fun OnboardingPage(modifier: Modifier = Modifier, title: Int, subTitle: Int, painter: Int) {
@@ -180,12 +192,14 @@ private fun PagerDotsIndicator(
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun ButtonsSection(
     modifier: Modifier = Modifier,
     coroutineScope: CoroutineScope,
     pagerState: PagerState,
-    totalPages: Int
+    totalPages: Int,
+    onSignIn: () -> Unit,
 ) {
     Column(
         modifier = modifier
@@ -194,7 +208,10 @@ private fun ButtonsSection(
             .padding(horizontal = 32.dp, vertical = 12.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        FilledButtons(stringResource = R.string.onboarding_button_next) {
+        FilledButtons(
+            stringResource =
+                if (pagerState.currentPage + 1 != totalPages) R.string.onboarding_button_next else R.string.onboarding_button_sign_in
+        ) {
             if (pagerState.currentPage + 1 != totalPages) {
                 coroutineScope.launch {
                     pagerState.animateScrollToPage(
@@ -202,10 +219,25 @@ private fun ButtonsSection(
                     )
                 }
             } else {
-                Log.i("Log In", "Acá aparecera el logueo")
+                onSignIn()
             }
         }
         Spacer(Modifier.height(12.dp))
-        OutlinedButtons(stringResource = R.string.onboarding_button_skip) { }
+        OutlinedButtons(stringResource = if (pagerState.currentPage + 1 != totalPages) R.string.onboarding_button_skip else R.string.onboarding_button_return) {
+            if (pagerState.currentPage + 1 != totalPages) {
+                coroutineScope.launch {
+                    pagerState.animateScrollToPage(
+                        page = totalPages - 1
+                    )
+                }
+            } else {
+                coroutineScope.launch {
+                    pagerState.animateScrollToPage(
+                        page = 0
+                    )
+                }
+            }
+        }
     }
 }
+

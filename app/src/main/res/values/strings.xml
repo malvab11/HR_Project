@@ -11,4 +11,27 @@
     <string name="onboarding_sub_title_4">Increase your work management and career development radically</string>
     <string name="onboarding_button_next">Next</string>
     <string name="onboarding_button_skip">Skip</string>
+    <string name="onboarding_button_sign_in">Sign In</string>
+    <string name="onboarding_button_return">Return</string>
+
+    <string name="auth_title">Sign In!</string>
+    <string name="auth_sub_title">Sign in to my account</string>
+    <string name="auth_input_1_label">Email</string>
+    <string name="auth_input_1_placeholder">My Email</string>
+    <string name="auth_input_2_label">Password</string>
+    <string name="auth_input_2_placeholder">My Password</string>
+    <string name="auth_input_3_label">Employee ID</string>
+    <string name="auth_input_3_placeholder">My Employee ID</string>
+    <string name="auth_input_4_label">Phone Number</string>
+    <string name="auth_input_4_placeholder">948 000 000</string>
+    <string name="auth_checkbox_label">Remember me</string>
+    <string name="auth_forgot_password">Forgot Password</string>
+    <string name="auth_sign_in_button">Sign in </string>
+    <string name="auth_division_label_side">OR</string>
+    <string name="auth_sign_in_with_email">Sign in With Email</string>
+    <string name="auth_sign_in_with_employee_id">Sign in With Employee ID</string>
+    <string name="auth_sign_in_with_phone">Sign in With Phone</string>
+    <string name="auth_dont_have_account_label">Don\'t have an account?</string>
+    <string name="auth_clickable_regiter_text">Sign Up Here</string>
+
 </resources>
